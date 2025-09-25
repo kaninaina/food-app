@@ -6,39 +6,66 @@ import { Dish } from '../models/common';
   providedIn: 'root',
 })
 export class Cart {
+  // BehaviorSubject to hold the current cart state
   private cartSubject = new BehaviorSubject<Dish[]>([]);
+
+  // Observable to allow subscription to cart changes
   cart$ = this.cartSubject.asObservable();
 
   constructor() {
-    const localCartItems = JSON.parse(localStorage.getItem('cart') ?? '[]');
+    // Load cart items from localStorage on service initialization
+    const localCartItems: Dish[] = JSON.parse(localStorage.getItem('cart') ?? '[]');
     this.cartSubject.next(localCartItems);
   }
 
-  addItem(dish: Dish) {
+  /**
+   * Add a dish to the cart. If the dish already exists, increment its quantity.
+   * @param dish - Dish to add
+   */
+  addItem(dish: Dish): void {
     const current = [...this.cartSubject.value];
     const index = current.findIndex((item) => item.id === dish.id);
+
     if (index >= 0) {
-      (current[index] as any).quantity += 1;
+      // Increase quantity if dish already exists
+      (current[index] as Dish & { quantity: number }).quantity += 1;
     } else {
+      // Add new dish with initial quantity
       current.push({ ...dish, quantity: 1 });
     }
-    this.cartSubject.next(current);
-    localStorage.setItem('cart', JSON.stringify(current));
+
+    this.updateCart(current);
   }
 
-  removeItem(dishId: number) {
+  /**
+   * Remove one quantity of a dish from the cart. Remove the dish if quantity reaches 0.
+   * @param dishId - ID of the dish to remove
+   */
+  removeItem(dishId: number): void {
     const current = this.cartSubject.value
       .map((item) =>
-        item.id === dishId ? { ...item, quantity: Math.max(0, (item?.quantity ?? 0) - 1) } : item
+        item.id === dishId ? { ...item, quantity: Math.max(0, (item.quantity ?? 0) - 1) } : item
       )
-      .filter((item) => (item?.quantity ?? 0) > 0);
-    this.cartSubject.next(current);
-    localStorage.setItem('cart', JSON.stringify(current));
+      .filter((item) => (item.quantity ?? 0) > 0);
+
+    this.updateCart(current);
   }
 
-  deleteItem(dishId: number) {
+  /**
+   * Delete a dish entirely from the cart regardless of its quantity
+   * @param dishId - ID of the dish to delete
+   */
+  deleteItem(dishId: number): void {
     const current = this.cartSubject.value.filter((item) => item.id !== dishId);
-    this.cartSubject.next(current);
-    localStorage.setItem('cart', JSON.stringify(current));
+    this.updateCart(current);
+  }
+
+  /**
+   * Helper function to update BehaviorSubject and localStorage
+   * @param cartItems - Updated cart array
+   */
+  private updateCart(cartItems: Dish[]): void {
+    this.cartSubject.next(cartItems);
+    localStorage.setItem('cart', JSON.stringify(cartItems));
   }
 }

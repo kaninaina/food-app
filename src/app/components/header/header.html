@@ -2,12 +2,14 @@
   class="w-100 d-flex justify-content-between align-items-center m-0 py-3 px-3 border-bottom shadow-sm"
 >
   <p class="h6 m-0">UNI Resto Cafe</p>
-  <div class="position-relative">
-    <a routerLink="cart" class="text-dark">
+  <a routerLink="cart" class="text-dark">
+    <div class="position-relative">
       <i class="fa-solid fa-cart-shopping"></i>
-    </a>
-    <small class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-      {{ cartCount }}
-    </small>
-  </div>
+      <small
+        class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+      >
+        {{ cartCount }}
+      </small>
+    </div>
+  </a>
 </header>
