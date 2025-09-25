@@ -1,21 +1,22 @@
-import { Component, Input } from '@angular/core';
-import { Dish } from '../../models/common';
-import { Cart } from '../../services/cart';
-import { CommonModule } from '@angular/common';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { CartItemOperationType, Dish } from '../../models/common';
+import { CommonModule, DecimalPipe } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-dish-card',
-  imports: [CommonModule],
+  imports: [CommonModule, DecimalPipe, TranslatePipe],
   templateUrl: './dish-card.html',
   styleUrl: './dish-card.css',
 })
 export class DishCard {
+  @Output() onUpdateQuantity = new EventEmitter<{ dish: Dish; type: CartItemOperationType }>();
   @Input() dish!: Dish;
-  constructor(private cart: Cart) {}
+
   addToCart() {
-    this.cart.addItem(this.dish);
+    this.onUpdateQuantity.emit({ dish: this.dish, type: 'increment' });
   }
-  removeCart() {
-    this.cart.removeItem(this.dish.id);
+  removeFromCart() {
+    this.onUpdateQuantity.emit({ dish: this.dish, type: 'decrement' });
   }
 }

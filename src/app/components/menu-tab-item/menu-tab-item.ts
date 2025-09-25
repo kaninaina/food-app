@@ -1,23 +1,23 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
-import { Dish } from '../../models/common';
+import { Component, inject, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { CartItemOperationType, Dish } from '../../models/common';
 import { DishCard } from '../dish-card/dish-card';
-import { CommonModule } from '@angular/common';
+import { CommonModule, UpperCasePipe } from '@angular/common';
+import { CartService } from '../../services/cart/cart';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-menu-tab-item',
-  imports: [DishCard, CommonModule],
+  imports: [DishCard, CommonModule, UpperCasePipe, TranslatePipe],
   templateUrl: './menu-tab-item.html',
   styleUrl: './menu-tab-item.css',
 })
-export class MenuTabItem implements OnInit, OnChanges {
+export class MenuTabItem implements OnChanges {
   @Input() dishes: Dish[] = [];
+  cartService = inject(CartService);
 
   filteredDishes: Dish[] = [];
   filterType: 'all' | 'veg' | 'nonveg' = 'all';
 
-  ngOnInit() {
-    this.filteredDishes = this.dishes; // initially show all
-  }
   ngOnChanges(changes: SimpleChanges) {
     if (changes['dishes']) {
       this.applyFilter(this.filterType); // re-apply filter whenever dishes change
@@ -31,6 +31,14 @@ export class MenuTabItem implements OnInit, OnChanges {
       this.filteredDishes = this.dishes.filter((d) => d.isVegetarian);
     } else {
       this.filteredDishes = this.dishes.filter((d) => !d.isVegetarian);
+    }
+  }
+
+  handleQuantityChange({ dish, type }: { dish: Dish; type: CartItemOperationType }) {
+    if (type === 'increment') {
+      this.cartService.increaseItemQuantity(dish);
+    } else if (type === 'decrement') {
+      this.cartService.decreaseItemQuantity(dish.id);
     }
   }
 }

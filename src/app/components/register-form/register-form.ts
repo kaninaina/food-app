@@ -1,66 +1,89 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Component, inject } from '@angular/core';
+import {
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+  AbstractControl,
+  ValidationErrors,
+  FormControl,
+} from '@angular/forms';
 import { Router } from '@angular/router';
+import { TranslatePipe } from '@ngx-translate/core';
+import { passwordRegexPattern } from '../../models/common';
 
 @Component({
   selector: 'app-register-form',
-  imports: [ReactiveFormsModule, CommonModule],
+  standalone: true,
+  imports: [ReactiveFormsModule, CommonModule, TranslatePipe],
   templateUrl: './register-form.html',
-  styleUrl: './register-form.css',
+  styleUrls: ['./register-form.css'],
 })
-export class RegisterForm implements OnInit {
-  registerForm!: FormGroup;
-  fb: FormBuilder = inject(FormBuilder);
-  route: Router = inject(Router);
-  ngOnInit(): void {
-    this.initForms();
-  }
-  private initForms() {
-    this.registerForm = this.fb.group(
-      {
-        name: ['', [Validators.required]],
-        email: ['', [Validators.required, Validators.email]],
-        password: [
-          '',
-          [
-            Validators.required,
-            Validators.minLength(6),
-            Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/),
-          ],
-        ],
-        confirmPassword: ['', [Validators.required]],
-      },
-      { validators: this.passwordMatchValidator }
-    );
-  }
+export class RegisterForm {
+  registerForm: FormGroup = new FormGroup(
+    {
+      name: new FormControl('', [Validators.required]),
+      email: new FormControl('', [Validators.required, Validators.email]),
+      password: new FormControl('', [
+        Validators.required,
+        Validators.minLength(6),
+        Validators.pattern(passwordRegexPattern),
+      ]),
+      confirmPassword: new FormControl('', [Validators.required]),
+    },
+    { validators: this.passwordMatchValidator }
+  );
+  private router: Router = inject(Router);
 
-  private passwordMatchValidator(form: FormGroup) {
+  /** Custom validator to check if password and confirmPassword match */
+  private passwordMatchValidator(form: AbstractControl): ValidationErrors | null {
     const password = form.get('password')?.value;
     const confirmPassword = form.get('confirmPassword')?.value;
 
-    // ✅ Run validation only if user typed something in confirmPassword
-    if (!confirmPassword) {
-      return null;
-    }
+    if (!confirmPassword) return null;
 
     return password === confirmPassword ? null : { mismatch: true };
   }
-  onRegister() {
+
+  /** Handle form submission */
+  onRegister(): void {
     if (this.registerForm.valid) {
-      this.route.navigate(['menu']);
+      console.log('Registration data:', this.registerForm.value);
+      this.router.navigate(['menu']);
+    } else {
+      this.registerForm.markAllAsTouched(); // show validation errors
     }
   }
-  get name() {
-    return this.registerForm.get('name');
+
+  /** Validation error messages */
+  get nameError(): string {
+    const name = this.registerForm.get('name');
+    if (!name?.touched) return '';
+    if (name?.hasError('required')) return 'Name is required.';
+    return '';
   }
-  get email() {
-    return this.registerForm.get('email');
+
+  get emailError(): string {
+    const email = this.registerForm.get('email');
+    if (!email?.touched) return '';
+    if (email?.hasError('required')) return 'EMAIL_IS_REQUIRED';
+    if (email?.hasError('email')) return 'EMAIL_VALID_ERROR';
+    return '';
   }
-  get password() {
-    return this.registerForm.get('password');
+
+  get passwordError() {
+    console.log('called');
+    const password = this.registerForm.get('password');
+    if (!password?.touched) return '';
+    if (password.errors?.['required']) return 'PASSWORD_IS_REQUIRED';
+    if (password.errors?.['pattern']) return 'PASSWORD_PATTERN_ERROR';
+    return '';
   }
-  get confirmPassword() {
-    return this.registerForm.get('confirmPassword');
+  get confirmPasswordError(): string {
+    const confirmPassword = this.registerForm.get('confirmPassword');
+    if (!confirmPassword?.touched) return '';
+    if (confirmPassword?.hasError('required')) return 'CONFIRM_PASSWORD_REQUIRED';
+    if (this.registerForm.hasError('mismatch')) return 'PASSWORD_MATCH_ERROR';
+    return '';
   }
 }
