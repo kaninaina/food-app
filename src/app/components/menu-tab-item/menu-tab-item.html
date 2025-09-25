@@ -1,0 +1,28 @@
+<div class="d-flex gap-2 mb-3 justify-content-end">
+  <button
+    class="btn btn-sm"
+    [ngClass]="filterType === 'all' ? 'btn-primary' : 'btn-outline-primary'"
+    (click)="applyFilter('all')"
+  >
+    All
+  </button>
+  <button
+    class="btn btn-sm"
+    [ngClass]="filterType === 'veg' ? 'btn-success' : 'btn-outline-success'"
+    (click)="applyFilter('veg')"
+  >
+    Veg
+  </button>
+  <button
+    class="btn btn-sm"
+    [ngClass]="filterType === 'nonveg' ? 'btn-danger' : 'btn-outline-danger'"
+    (click)="applyFilter('nonveg')"
+  >
+    Non-Veg
+  </button>
+</div>
+@for (item of filteredDishes; track $index) {
+<div class="py-3" [class.border-bottom]="!$last">
+  <app-dish-card [dish]="item"></app-dish-card>
+</div>
+}

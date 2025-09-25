@@ -1,0 +1,26 @@
+<div class="container">
+  <div class="row justify-content-center min-vh-100 align-items-center">
+    <div class="col-lg-6 col-md-8 col-sm-10">
+      <div class="card shadow-sm p-4">
+        <h3 class="text-center mb-4 border-bottom py-1">
+          {{ isLoginMode ? 'Login' : 'Create Account' }}
+        </h3>
+
+        <!-- Login Form -->
+        @if (isLoginMode) {
+        <app-login-form></app-login-form>
+        }@else {
+        <app-register-form></app-register-form>
+        }
+
+        <!-- Register Form -->
+
+        <div class="text-center mt-3">
+          <a (click)="toggleMode()" class="nav-underline link">
+            {{ isLoginMode ? 'Create new account?' : 'Already have an account?' }}
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
