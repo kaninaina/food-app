@@ -7,53 +7,26 @@ This project was generated using [Angular CLI](https://github.com/angular/angula
 To start a local development server, run:
 
 ```bash
-ng serve
+npm run start
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+1. Authentication Page (/auth)
 
-## Code scaffolding
+Handles user login and signup.
+Users can create a new account or log in with existing credentials.
+Includes form validations for secure and proper input.
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+2. Menu Page (/menu)
+   Displays a list of available items.
+   Users can browse through the menu and view item details.
+   Supports filtering and searching of menu items (if implemented).
 
-```bash
-ng generate component component-name
-```
+3. Cart Page (/cart)
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+Shows all items added to the cart.
+Users can modify quantities or remove items.
+Displays the total amount for all items in the cart
 
-```bash
-ng generate --help
-```
+## Clone the app in github by run this command
 
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+git clone https://github.com/kaninaina/food-app.git

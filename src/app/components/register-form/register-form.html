@@ -2,6 +2,9 @@
   <div class="mb-3">
     <label for="name" class="form-label">Name *</label>
     <input type="text" id="name" formControlName="name" class="form-control" />
+    @if (name?.dirty) {
+    <small *ngIf="name?.errors?.['required']" class="text-danger mt-1">Name is required.</small>
+    }
   </div>
   <div class="mb-3">
     <label for="email" class="form-label">Email *</label>
@@ -15,8 +18,17 @@
   </div>
   <div class="mb-3">
     <label for="passwordReg" class="form-label">Password *</label>
-
     <input type="password" id="passwordReg" formControlName="password" class="form-control" />
+    @if (password?.dirty) {
+    <small *ngIf="password?.errors?.['required']" class="text-danger mt-1"
+      >Password is required.</small
+    >
+    <small *ngIf="password?.errors?.['pattern']" class="text-danger mt-1"
+      >Password must be at least 6 characters and include uppercase, lowercase, number, and special
+      character.</small
+    >
+
+    }
   </div>
   <div class="mb-3">
     <label for="confirmPassword" class="form-label">Confirm Password *</label>
