@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { Cart } from '../../services/cart';
+import { CartService } from '../../services/cart/cart';
 import { RouterLink } from '@angular/router';
 
 @Component({
@@ -9,12 +9,11 @@ import { RouterLink } from '@angular/router';
   styleUrl: './header.css',
 })
 export class Header {
-  cart: Cart = inject(Cart);
-
-  cartCount: number = 0;
+  cartService: CartService = inject(CartService);
+  cartQuantityCount: number = 0;
   ngOnInit(): void {
-    this.cart.cart$.subscribe((cart) => {
-      this.cartCount = cart.reduce((sum, item) => sum + (item?.quantity ?? 0), 0);
+    this.cartService.cart$.subscribe((cart) => {
+      this.cartQuantityCount = cart.reduce((sum, item) => sum + (item?.quantity ?? 0), 0);
     });
   }
 }

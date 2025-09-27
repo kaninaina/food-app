@@ -15,6 +15,12 @@ export type Category = {
   dishes: Dish[];
 };
 
-export type ApiResponse = {
+export type MenuResponseType = {
   categories: Category[];
 };
+
+export type CartItemOperationType = 'increment' | 'decrement';
+
+export const passwordRegexPattern = new RegExp(
+  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{6,}$/
+);

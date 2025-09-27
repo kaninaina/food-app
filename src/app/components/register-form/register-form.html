@@ -1,49 +1,68 @@
 <form [formGroup]="registerForm" (ngSubmit)="onRegister()">
-  <div class="mb-3">
-    <label for="name" class="form-label">Name *</label>
-    <input type="text" id="name" formControlName="name" class="form-control" />
-    @if (name?.dirty) {
-    <small *ngIf="name?.errors?.['required']" class="text-danger mt-1">Name is required.</small>
-    }
-  </div>
-  <div class="mb-3">
-    <label for="email" class="form-label">Email *</label>
-    <input type="email" id="email" formControlName="email" class="form-control" />
-    @if (email?.dirty) {
-    <small *ngIf="email?.errors?.['required']" class="text-danger mt-1">Email is required.</small>
-    <small *ngIf="email?.errors?.['email']" class="text-danger mt-1"
-      >Enter a valid email address.</small
-    >
-    }
-  </div>
-  <div class="mb-3">
-    <label for="passwordReg" class="form-label">Password *</label>
-    <input type="password" id="passwordReg" formControlName="password" class="form-control" />
-    @if (password?.dirty) {
-    <small *ngIf="password?.errors?.['required']" class="text-danger mt-1"
-      >Password is required.</small
-    >
-    <small *ngIf="password?.errors?.['pattern']" class="text-danger mt-1"
-      >Password must be at least 6 characters and include uppercase, lowercase, number, and special
-      character.</small
-    >
+  <div class="d-flex flex-column gap-1">
+    <!-- Name Field -->
+    <div class="mb-3">
+      <label for="name" class="form-label">{{ 'NAME' | translate }} *</label>
+      <input
+        type="text"
+        id="name"
+        formControlName="name"
+        class="form-control"
+        [class.is-invalid]="registerForm.get('name')?.touched && registerForm.get('name')?.invalid"
+        [placeholder]="'ENTER_YOUR_NAME' | translate"
+      />
+      <div class="invalid-feedback">{{ nameError | translate }}</div>
+    </div>
 
-    }
-  </div>
-  <div class="mb-3">
-    <label for="confirmPassword" class="form-label">Confirm Password *</label>
-    <input
-      type="password"
-      id="confirmPassword"
-      formControlName="confirmPassword"
-      class="form-control"
-    />
-    @if (registerForm.errors?.['mismatch']) {
-    <small class="text-danger mt-1">Confirm password does not match the password.</small>
-    }
-  </div>
+    <!-- Email Field -->
+    <div class="mb-3">
+      <label for="email" class="form-label">{{ 'EMAIL' | translate }} *</label>
+      <input
+        type="email"
+        id="email"
+        formControlName="email"
+        class="form-control"
+        [class.is-invalid]="
+          registerForm.get('email')?.touched && registerForm.get('email')?.invalid
+        "
+        [placeholder]="'ENTER_YOUR_EMAIL' | translate"
+      />
+      <div class="invalid-feedback">{{ emailError | translate }}</div>
+    </div>
 
-  <button type="submit" class="btn btn-primary w-100" [disabled]="!registerForm.valid">
-    Register
-  </button>
+    <!-- Password Field -->
+    <div class="mb-3">
+      <label for="passwordReg" class="form-label">{{ 'PASSWORD' | translate }} *</label>
+      <input
+        type="password"
+        id="passwordReg"
+        formControlName="password"
+        class="form-control"
+        [class.is-invalid]="
+          registerForm.get('password')?.touched && registerForm.get('password')?.invalid
+        "
+        [placeholder]="'ENTER_YOUR_PASSWORD' | translate"
+      />
+      <div class="invalid-feedback">{{ passwordError | translate }}</div>
+    </div>
+
+    <!-- Confirm Password Field -->
+    <div class="mb-3">
+      <label for="confirmPassword" class="form-label">{{ 'CONFIRM_PASSWORD' | translate }} *</label>
+      <input
+        type="password"
+        id="confirmPassword"
+        formControlName="confirmPassword"
+        class="form-control"
+        [class.is-invalid]="registerForm.get('confirmPassword')?.touched && (registerForm.get('confirmPassword')?.invalid || registerForm.errors?.['mismatch'])"
+        [placeholder]="'CONFIRM_YOUR_PASSWORD' | translate"
+      />
+      <div class="invalid-feedback">{{ confirmPasswordError | translate }}</div>
+    </div>
+
+    <!-- Submit Button -->
+    <button type="submit" class="btn btn-primary w-100" [disabled]="registerForm.invalid">
+      {{ 'REGISTER' | translate }}
+    </button>
+  </div>
 </form>
